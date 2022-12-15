@@ -5,10 +5,7 @@ import com.karatay.lightfeather.repository.SupervisorRepository;
 import net.bytebuddy.implementation.bind.annotation.Super;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 @Service
 public class SupervisorService {
@@ -18,16 +15,11 @@ public class SupervisorService {
         this.supervisorRepository = supervisorRepository;
     }
 
-/*
-    public Supervisor save(Supervisor supervisor){
-        return supervisorRepository.save(supervisor);
-    }*/
-
     public List<Supervisor> saveAll(List<Supervisor> supervisors){
         return supervisorRepository.saveAll(supervisors);
     }
 
-    public Iterable<String> list() {
+    public List<String> getAllSupervisors() {
         var supervisors = supervisorRepository.findAll();
         PriorityQueue<Supervisor> pq = new PriorityQueue<>(
                 Comparator.comparing(Supervisor::getJurisdiction)
@@ -53,10 +45,5 @@ public class SupervisorService {
     public Supervisor getASupervisorById(Long supervisorId) {
         return supervisorRepository.findById(supervisorId).orElse(null);
     }
-
-    /*public Iterable<Supervisor> save(List<Supervisor> users) {
-        return supervisorRepository.save(users);
-    }*/
-
 
 }

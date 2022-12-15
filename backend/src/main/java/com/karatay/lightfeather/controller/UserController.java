@@ -1,12 +1,14 @@
 package com.karatay.lightfeather.controller;
 
 import com.karatay.lightfeather.entity.User;
-import com.karatay.lightfeather.exception.UserNotFoundException;
+//import com.karatay.lightfeather.exceptions.UserNotFoundException;
 import com.karatay.lightfeather.request.UserCreateRequest;
 import com.karatay.lightfeather.service.UserService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -25,8 +27,8 @@ public class UserController {
     }
 
     @PostMapping("/submit")
-    public User createOneUser(@RequestBody UserCreateRequest userCreateRequest) throws Exception {
-        return userService.createOneUser(userCreateRequest);
+    public ResponseEntity<User> createOneUser(@RequestBody @Valid UserCreateRequest userCreateRequest) {
+        return new ResponseEntity<>(userService.createOneUser(userCreateRequest),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/users/{userId}")
