@@ -1,6 +1,14 @@
 import React from "react"
 import {useState,useEffect} from "react"
 import '../../index.css';
+import Button from "react-bootstrap/Button"
+import Card from "react-bootstrap/Card"
+import Col from "react-bootstrap/Col"
+import Row from "react-bootstrap/Row"
+import Container from "react-bootstrap/Container"
+import AddUser from "./Users";
+import Users from "./Users";
+
 
 const User =  () => {
   const [supervisors,setSupervisors] = useState([]);
@@ -14,7 +22,8 @@ const User =  () => {
   const [supervisorId, setSupervisorId] = useState();
   const [error,setError] = useState(null);
 
-   const save = ()=>  { fetch("http://localhost:8080/api/submit",{
+   const save = () =>  { 
+    fetch("http://localhost:8080/api/submit",{
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -33,12 +42,13 @@ const User =  () => {
         })
         .then((resp )=> {
             if(!resp.ok){
+                console.log(resp)
                 throw Error("User can not be created! TRY AGAIN!")
             }
             resp.json()
         })
-        .then(userData => { console.log(userData)   
-        }).catch(data => setError(data.message))
+        .then(b => console.log(b))
+        .catch(data => setError(data.message))
    }
 
    useEffect(() => {
@@ -95,7 +105,7 @@ const User =  () => {
     }
 
     const phoneNumberChange = (e) => {
-        setPhone(e.target.value)
+        setPhone(parseInt(e.target.value))
     }
 
     const supervisorSelect = (e) => {
@@ -116,56 +126,63 @@ const User =  () => {
         setCanMessage(!e.target.checked)
     }
 
-    return(
-       <div style={{ border:"solid", display: "flex", alignItems: "center",justifyContent: "center"}} >
-        <div style={{ border:"solid",fontSize:"20px"}}>
-        <form onSubmit={handleSubmit} >
-             NOTIFICATION FORM
+    return(<>
+    <Container className="form-container">
+    <Card className="notification-card">
+        <Row>
+            <Col>
+                 <form onSubmit={handleSubmit} >
+                    <div >
+                    NOTIFICATION FORM
+                    </div>
+              
             <div>
-                <label>First Name: </label>
-                <input placeholder="firstName" onChange={firstNameChange}/>
-            <label>Last Name: </label>
-            <input placeholder="lastName" onChange={lastNameChange}/>
+                 <label>First Name: </label>
+                 <input placeholder="firstName" onChange={firstNameChange} required/>
+                <label>Last Name: </label>
+                <input placeholder="lastName" onChange={lastNameChange} required/>
+             </div>
+            <div>
+                How do you like to be connected?<br />
             </div>
+            <div >
+                <input type="checkbox" onChange={canSendEmail}
+                value="yes"/>
 
-            How do you like to be connected?<br />
-            <input type="checkbox" onChange={canSendEmail}
-            value="yes"/>
-
-            <label>Email </label>
-            <input placeholder="email" onChange={emailChange}/>
-           
-            <input type="checkbox" onChange={canSendMessage}/>
-     
-
-            <label>Phone Number: </label>
-            <input placeholder="Phone" onChange={phoneNumberChange}/>
-           
-            <br />
-            <select onChange={supervisorSelect}>
-                <option>Select</option>
-                {supervisors && supervisors.map(supervisor => (
-                    
-                    <option value={supervisor.substring(supervisor.indexOf("#")+1)} key={supervisor.substring(supervisor.indexOf("#"),-1)}>{supervisor.substring(0,supervisor.indexOf("#"))}</option>
-                ))}
-            </select>
-            <input type="submit" value="Create User" style={{backgroundColor: "#abb8fc" ,border: "black", fontSize:"20px"}} />
-
-            </form>
-            {error && <div style={{font:"red"}}>  {error} </div>}
-        </div>
+                <label>Email </label>
+                <input placeholder="email" type="email" onChange={emailChange}/>
+            
+                <input type="checkbox" onChange={canSendMessage}/>
         
-        <div className="form-container">
-            USERS REGISTERED!!
-            {users && users.map(user => 
-                <div style={{backgroundColor: "#abb8fc" ,borderStyle: "solid", margin:"20px"}}>
-                    <h3>{user.firstName}-{user.lastName} ----> Your Supervisor is {user.supervisor.firstName} {user.supervisor.lastName} </h3>
-                </div >
-                )}
-        </div>
+                <label>Phone Number: </label>
+                <input placeholder="Phone" type="tel" onChange={phoneNumberChange}/>
+           
+             <br />
+             </div >
+             <div className="form-container">
+             <select onChange={supervisorSelect}>
+                 <option>Select</option>
+                 {supervisors && supervisors.map(supervisor => (
+                    
+                     <option value={supervisor.substring(supervisor.indexOf("#")+1)} key={supervisor.substring(supervisor.indexOf("#"),-1)}>{supervisor.substring(0,supervisor.indexOf("#"))}</option>
+                 ))}
+             </select>
+            
+             <input type="submit" value="Create User" style={{backgroundColor: "#abb8fc" ,border: "black", fontSize:"20px"}} />
+             </div>
+             </form>
+             {error && <div style={{font:"red"}}>  {error} </div>}
+            </Col>
+        </Row>
+       
+    </Card>
     
-       </div>
-    )
+    </Container>
+   
+    </>
+
+
+    ) 
 }
 
 export default User;
